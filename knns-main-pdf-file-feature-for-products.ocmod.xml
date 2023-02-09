@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+	<id><![CDATA[Add main PDF file feature for products]]></id>
+	<name><![CDATA[Add main PDF file feature for products]]></name>
+	<code>knns-main-pdf-file-feature-for-products</code>
+	<version>1.0.0</version>
+	<author><![CDATA[kanenas.net (aka Nikolas Branis) - nbran@kanenas.net]]></author>
+	<link>https://kanenas.net/</link>
+	<file path="admin/language/el-gr/catalog/product.php">
+		<operation>
+			<search><![CDATA[// Entry]]></search>
+			<add position="after"><![CDATA[$_['entry_main_pdf_file']         = 'Κυρίως PDF αρχείο';]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/catalog/product.php">
+		<operation>
+			<search><![CDATA[// Entry]]></search>
+			<add position="after"><![CDATA[$_['entry_main_pdf_file']         = 'Main PDF file';]]></add>
+		</operation>
+	</file>
+	<file path="admin/model/catalog/product.php">
+		<operation>
+			<search><![CDATA[location = '" . $this->db->escape($data['location']) . "',]]></search>
+			<add position="replace"><![CDATA[location = '" . $this->db->escape($data['location']) . "', main_pdf_file = '" . $this->db->escape($data['main_pdf_file']) . "',]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/catalog/product.php">
+		<operation>
+			<search><![CDATA[if (isset($this->request->post['minimum'])) {]]></search>
+			<add position="before"><![CDATA[
+		if (isset($this->request->post['main_pdf_file'])) {
+			$data['main_pdf_file'] = $this->request->post['main_pdf_file'];
+		} elseif (!empty($product_info)) {
+			$data['main_pdf_file'] = $product_info['main_pdf_file'];
+		} else {
+			$data['main_pdf_file'] = '';
+		}
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/view/template/catalog/product_form.twig">
+		<operation>
+			<search><![CDATA[<input type="text" name="location" value="{{ location }}" placeholder="{{ entry_location }}" id="input-location" class="form-control"/>]]></search>
+			<add position="after" offset="2"><![CDATA[
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-main-pdf-file">{{ entry_main_pdf_file }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="main_pdf_file" value="{{ main_pdf_file }}" placeholder="{{ entry_main_pdf_file }}" id="input-main-pdf-file" class="form-control"/>
+                </div>
+              </div>
+			]]></add>
+		</operation>
+	</file>
+</modification>
